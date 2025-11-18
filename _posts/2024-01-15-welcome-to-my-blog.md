@@ -8,19 +8,20 @@ excerpt: "An introduction to this blog and what you can expect to find here."
 
 # Welcome!
 
-This is my first blog post. I'm excited to share my thoughts and ideas with you.
+Hello! This is my first blog post
 
-## What is this blog about?
+## What is this page about?
 
-This blog will cover topics including:
+This blog will serve to give an insight into my ideas, journey and struggles as i explore my various interests in the field of computer science. Stay tuned!
 
-- Technology and programming
-- Machine learning and AI
-- Personal projects and experiments
-- Thoughts on industry trends
+## Book List
 
-## What to expect
+I will be using this page to keep myself accountable with reading. You'll find my current reads, reading backlog, and completed books, plus posts diving into what I learned from books I've finished.
 
-I'll be posting regularly about interesting problems I'm working on, tutorials, and deep dives into technical topics.
+## Project Showcase
 
-Stay tuned for more content!
+I will be posting showcase/deep dives into previously completed and future projects.
+
+## Disclaimer
+
+Every blog post on this page is written without AI language model assistance as I want to truly recount MY OWN thoughts, not AI's, and use these blogs as a means to practice my writing. Grammar checking is fair game though.
