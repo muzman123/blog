@@ -41,7 +41,7 @@
             </header>
 
             <div class="post-body">
-                <p>I recently stumbled upon a research paper called "REAP: Router-weighted Expert Activation Pruning". The paper showed that you could remove up to 50% of experts from massive Sparse Mixture of Experts (SMoE) models with barely any performance loss. My first thought was: "Wait, if half the model is redundant, why even train it that big in the first place?"</p>
+                <p>I recently stumbled upon a research paper called "REAP the Experts: Why Pruning Prevails for One-Shot MoE compression". The paper showed that you could remove up to 50% of experts from massive Sparse Mixture of Experts (SMoE) models with barely any performance loss. My first thought was: "Wait, if half the model is redundant, why even train it that big in the first place?"</p>
 
                 <p>That question sent me down a rabbit hole, and this post is basically me working through what I learned.</p>
 
@@ -86,7 +86,7 @@
 
                 <h3>Q1: Does having more experts during training mean each expert becomes less redundant?</h3>
 
-                <p>I managed to find a paper that answers this question but in short, yes.</p>
+                <p>I managed to find a paper that answers this question titled "Revisiting SMoE Language Models by Evaluating Inefficiencies with Task Specific Expert Pruning", but in short, yes.</p>
 
                 <p>This was a key realization for me. When you train with:</p>
 
