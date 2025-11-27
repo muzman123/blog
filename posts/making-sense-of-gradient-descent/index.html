@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Making Sense of Gradient Descent - My Blog</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Droid+Serif&family=Droid+Sans&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="../../css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="../../">Muhammad Muzammil</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <article>
+            <header class="post-header">
+                <h1>Making Sense of Gradient Descent: A Learning Journey</h1>
+                <p class="post-meta">November 26, 2025</p>
+            </header>
+
+            <div class="post-body">
+                <p>I've been diving deep into neural networks, and gradient descent kept coming up as this fundamental concept. The textbook explanations made sense on paper, but I didn't *really* get it until I started sketching things out. Here's how I figured it out, the questions I had, and the "aha!" moments along the way.</p>
+
+                <p>Let me start with the breakthrough moment. I was stuck trying to understand how neural networks actually learn when I drew this simple sketch of a bowl with contour lines. This one drawing made everything click.</p>
+
+                <p><strong>The error surface is literally a bowl.</strong></p>
+
+                <p>Imagine you have a neuron with 2 weights (w₁, w₂). For any combination of these weights, you get error, a measure of how wrong your predictions are. If you plot this in 3D with weight 1 on the X-axis, weight 2 on the Y-axis, and error on the Z-axis, you get a bowl shape! The bottom of the bowl is where error = 0 (perfect weights). The sides of the bowl are where your weights give you a high error.</p>
+
+                <div class="text-center my-4">
+                    <img src="images/bowlgraph.png" alt="Error Surface Bowl" class="img-fluid" style="max-width: 100%; height: auto;">
+                </div>
+
+                <p>The whole idea of gradient descent is simple: you're a blind person trying to find the most efficient way down to the bottom of this bowl.</p>
+
+                <p>When you flatten the bowl into 2D and draw contour lines (like a topographic map), gradient descent moves <strong>exactly perpendicular</strong> to these contours.</p>
+
+                <p>Why? Because perpendicular is the direction of steepest change. Moving parallel to a contour wouldn't change your error at all. Instead, you'd just be walking around the bowl at the same height!</p>
+
+                <div class="text-center my-4">
+                    <img src="images/contours.png" alt="Contour Lines" class="img-fluid" style="max-width: 100%; height: auto;">
+                </div>
+
+                <h2>How Do You Descend?</h2>
+
+                <p>If you're blind and standing somewhere on this bowl, how do you find your way down efficiently? You feel the ground around your feet to figure out which direction slopes down the steepest, take a step in that direction, and repeat until you reach the bottom.</p>
+
+                <p>That's literally gradient descent. You evaluate your current position by calculating the current error, find the direction of steepest descent by calculating the gradient ∂E/∂w, take a step in that direction by updating weights (Δw = -ε∂E/∂w), and repeat. The "gradient" is just the direction that makes the error increase fastest. Since we want to <em>decrease</em> error, we go the opposite direction which is why there's a negative sign in the formula.</p>
+
+                <h2>Why Not Just Solve It?</h2>
+
+                <p>When I first saw the error function E = ½Σ(tᵢ - yᵢ)², I thought: "Can't we just solve this mathematically?" For <strong>linear neurons</strong>, technically yes! It's just a system of equations. You could solve it directly.</p>
+
+                <p><strong>But linear neurons suck.</strong> They can't learn complex patterns. Linear neurons can only draw straight lines to classify data, meanwhile real-life classification and pattern recognition may require all sorts of shapes and curves. That's why we use non-linear activation functions like sigmoid or ReLU.</p>
+
+                <p>And once you add non-linearity, you can't just "solve" it anymore. The error surface becomes complex and high-dimensional (like that 3D bowl) that you have to navigate step by step. Hence, gradient descent.</p>
+
+                <h2>The Three Ways to Descend (And My Confusion)</h2>
+
+                <p>The textbook mentioned three different gradient descent methods. I thought: "Wait, do you use all three together?" <strong>No.</strong> You pick ONE. They're just different strategies for the same goal.</p>
+
+                <p><strong>Batch Gradient Descent</strong> uses your entire dataset to calculate the error surface, then takes one step based on the average gradient from all examples. The problem? It can get stuck in flat regions (saddle points) that look like minima but aren't. It's also slow with huge datasets.</p>
+
+                <p><strong>Stochastic Gradient Descent (SGD)</strong> uses ONE random example at a time. The error surface is now dynamic and changes with each example! The jittery path helps avoid saddle points, but one example isn't a good approximation of the true error surface.</p>
+
+                <p><strong>Minibatch Gradient Descent</strong> is what everyone actually uses. You use a small random subset (like 32, 64, 128 examples) and update weights after each mini-batch. Best of both worlds; efficient AND escapes saddle points. This introduces a new hyperparameter though: batch size.</p>
+
+                <h2>The PyTorch Question That Bugged Me</h2>
+
+                <p>Here's what really confused me. From using PyTorch earlier, i remember the optimizer i used to train a neural network was <code>SGD</code>, however my 'DataLoader' had minibatches which confused me. Turns out, the DataLoader is responsible for defining the KIND of Gradient Descent that takes place on the data.</p>
+
+                <pre><code>optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+
+# Then you train with minibatches
+for batch in dataloader:  # batch_size = 32
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()  # Updates using this batch of 32</code></pre>
+
+                <h2>Learning Rate:</h2>
+
+                <p>Simply put, the learning rate is a hyperparameter that defines how big each step of the gradient descent will be. This is a parameter that can be tuned to make the learning process better or worse for your model.</p>
+
+                <p>I drew two different bowls to understand it. A steeper bowl where contours are close together means you're far from the minimum. A flatter bowl where contours are spread out means you're near the minimum.</p>
+
+                <div class="text-center my-4">
+                    <img src="images/flatbowls.png" alt="Steep vs Flat Bowls" class="img-fluid" style="max-width: 100%; height: auto;">
+                </div>
+
+                <p>With a small learning rate, you get safe, stable steps, but it could take forever to reach the bottom. With a large learning rate, you make fast progress when far from minimum, but you could overshoot and diverge when you're close!</p>
+
+                <p>The ideal approach? Start with a larger learning rate, then decrease it as you get closer to the minimum. This is called learning rate scheduling.</p>
+
+                <h2>The Key Takeaway</h2>
+
+                <p>Gradient descent isn't magic. It's just this: you're in a bowl (the error surface), you want to reach the bottom (minimum error), you can only feel the slope locally (the gradient), so you take steps downhill (weight updates) and repeat until you're at the bottom (convergence).</p>
+
+                <p>The bowl metaphor made everything click for me. Once I could visualize it, the math stopped being abstract formulas and became geometric intuition.</p>
+
+                <hr>
+
+                <p><em>This post is part of my deep learning journey. I'm currently working through "Fundamentals of Deep Learning" and documenting my understanding as I go.</em></p>
+
+                <a href="../../" class="back-link">← Back to home</a>
+            </div>
+        </article>
+    </div>
+
+    <footer class="mt-5 py-4 bg-light">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2025. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
