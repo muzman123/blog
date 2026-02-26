@@ -1,3 +1,0 @@
-Testing approval-free git workflow!
-This is a random test file to verify the config works.
-No more manual approvals needed! 🚀
