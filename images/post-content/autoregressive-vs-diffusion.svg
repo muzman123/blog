@@ -1,0 +1,64 @@
+<svg width="1000" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="500" y="30" font-family="Arial, sans-serif" font-size="22" fill="#333" text-anchor="middle" font-weight="bold">Autoregressive vs Diffusion Generation</text>
+  
+  <!-- Autoregressive Section -->
+  <rect x="50" y="60" width="400" height="300" rx="10" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2"/>
+  <text x="250" y="90" font-family="Arial, sans-serif" font-size="18" fill="#7b1fa2" text-anchor="middle" font-weight="bold">Autoregressive (GPT-style)</text>
+  
+  <!-- Autoregressive tokens -->
+  <rect x="80" y="120" width="80" height="40" rx="5" fill="#ce93d8" stroke="#7b1fa2" stroke-width="1"/>
+  <text x="120" y="145" font-family="monospace" font-size="14" fill="#4a148c" text-anchor="middle">Hello</text>
+  
+  <line x1="170" y1="140" x2="195" y2="140" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <rect x="205" y="120" width="80" height="40" rx="5" fill="#ba68c8" stroke="#7b1fa2" stroke-width="1"/>
+  <text x="245" y="145" font-family="monospace" font-size="14" fill="#4a148c" text-anchor="middle">world</text>
+  
+  <line x1="295" y1="140" x2="320" y2="140" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <rect x="330" y="120" width="80" height="40" rx="5" fill="#ab47bc" stroke="#7b1fa2" stroke-width="1"/>
+  <text x="370" y="145" font-family="monospace" font-size="14" fill="#4a148c" text-anchor="middle">!</text>
+  
+  <text x="250" y="200" font-family="Arial, sans-serif" font-size="14" fill="#555" text-anchor="middle">One token at a time →</text>
+  <text x="250" y="230" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">• Sequential generation</text>
+  <text x="250" y="250" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">• Left-to-right only</text>
+  <text x="250" y="270" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">• Fast sampling (single pass)</text>
+  <text x="250" y="290" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">• Struggles with reversals</text>
+  <text x="250" y="330" font-family="Arial, sans-serif" font-size="13" fill="#7b1fa2" text-anchor="middle" font-weight="bold">Time: O(n) steps</text>
+  
+  <!-- Diffusion Section -->
+  <rect x="550" y="60" width="400" height="300" rx="10" fill="#e0f2f1" stroke="#00695c" stroke-width="2"/>
+  <text x="750" y="90" font-family="Arial, sans-serif" font-size="18" fill="#00695c" text-anchor="middle" font-weight="bold">Diffusion (LLaDA-style)</text>
+  
+  <!-- Diffusion step 1 -->
+  <text x="750" y="115" font-family="Arial, sans-serif" font-size="12" fill="#004d40" text-anchor="middle">Step 1: Heavily masked</text>
+  <rect x="620" y="125" width="260" height="30" rx="5" fill="#b2dfdb" stroke="#00695c" stroke-width="1"/>
+  <text x="750" y="147" font-family="monospace" font-size="13" fill="#004d40" text-anchor="middle">[M][M][M][M][M][M][M][M]</text>
+  
+  <!-- Arrow down -->
+  <line x1="750" y1="162" x2="750" y2="175" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <!-- Diffusion step 2 -->
+  <text x="750" y="190" font-family="Arial, sans-serif" font-size="12" fill="#004d40" text-anchor="middle">Step 5: Partially unmasked</text>
+  <rect x="620" y="195" width="260" height="30" rx="5" fill="#80cbc4" stroke="#00695c" stroke-width="1"/>
+  <text x="750" y="217" font-family="monospace" font-size="13" fill="#004d40" text-anchor="middle">He[M][M]o w[M]rld !</text>
+  
+  <!-- Arrow down -->
+  <line x1="750" y1="232" x2="750" y2="245" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <!-- Diffusion final -->
+  <text x="750" y="260" font-family="Arial, sans-serif" font-size="12" fill="#004d40" text-anchor="middle">Final: Clean text</text>
+  <rect x="620" y="265" width="260" height="30" rx="5" fill="#4db6ac" stroke="#00695c" stroke-width="1"/>
+  <text x="750" y="287" font-family="monospace" font-size="13" fill="#fff" text-anchor="middle">Hello world !</text>
+  
+  <text x="750" y="320" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">• Iterative denoising</text>
+  <text x="750" y="340" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">• Bidirectional context</text>
+  <text x="750" y="360" font-family="Arial, sans-serif" font-size="13" fill="#00695c" text-anchor="middle" font-weight="bold">Time: O(T×n) steps (T diffusion steps)</text>
+</svg>

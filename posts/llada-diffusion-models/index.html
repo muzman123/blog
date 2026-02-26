@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning from Large Language Diffusion Models - My Blog</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Droid+Serif&family=Droid+Sans&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="../../css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="../../">Muhammad Muzammil</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <article>
+            <header class="post-header">
+                <h1>Learning from Large Language Diffusion Models (LLaDA)</h1>
+                <p class="post-meta">February 25, 2026</p>
+            </header>
+
+            <div class="post-body">
+                <h2>Why I picked this paper</h2>
+
+                <p>I used to think language models had to be autoregressive. Next token, next token, forever. Then I found a paper that says you can do language with diffusion instead. That idea felt wrong to me at first, so I decided to read it carefully.</p>
+
+                <p>The paper is <em>Large Language Diffusion Models (LLaDA)</em>. It claims you can train a language model using a diffusion-style objective and still get strong reasoning and instruction following.</p>
+
+                <h2>The basic idea in my own words</h2>
+
+                <p>Diffusion in images works like this. You add noise to clean images, then train a model to remove the noise step by step. For text, you cannot add Gaussian noise, so the authors use <strong>masking</strong> as the corruption process.</p>
+
+                <p>So the pipeline is:</p>
+
+                <ul>
+                    <li>Forward process: randomly mask tokens in the input.</li>
+                    <li>Reverse process: predict the masked tokens.</li>
+                </ul>
+
+                <div class="text-center my-4">
+                    <img src="../../images/post-content/diffusion-process.svg" alt="Diffusion Process for Text" class="img-fluid" style="max-width: 100%; height: auto;">
+                    <p class="text-muted mt-2"><small><em>Figure 1: The diffusion process for text uses masking instead of Gaussian noise. Clean text is progressively masked (forward), then the model learns to unmask (reverse).</em></small></p>
+                </div>
+
+                <p>That sounds like BERT. The difference here is that the authors build it as a generative diffusion process with a likelihood objective, and then scale it like an LLM.</p>
+
+                <h2>A tiny bit of math intuition</h2>
+
+                <p>The model is trained to maximize a lower bound on the data likelihood, which is standard in diffusion models. I do not need the full derivation, but the important intuition is:</p>
+
+                <ul>
+                    <li>There is a sequence of corrupted versions of the text, from clean to heavily masked.</li>
+                    <li>The model learns to go backwards, from more corrupted to less corrupted.</li>
+                </ul>
+
+                <p>So the reverse model is the real engine. It predicts missing tokens under a learned probability distribution. In short, it is still a probabilistic language model, just not autoregressive.</p>
+
+                <h2>What they built</h2>
+
+                <p>They train LLaDA from scratch, not as a fine-tuned masked LM. Then they compare against autoregressive baselines they built themselves.</p>
+
+                <p>Key claims in the paper:</p>
+
+                <ul>
+                    <li>LLaDA scales similarly to autoregressive models.</li>
+                    <li>LLaDA 8B is competitive with strong 8B LLMs in in-context learning.</li>
+                    <li>After supervised fine-tuning, it can do instruction following and multi-turn dialogue.</li>
+                    <li>It performs well on a reversal-style task, which is a known weakness in autoregressive LLMs.</li>
+                </ul>
+
+                <div class="text-center my-4">
+                    <img src="../../images/post-content/autoregressive-vs-diffusion.svg" alt="Autoregressive vs Diffusion Models" class="img-fluid" style="max-width: 100%; height: auto;">
+                    <p class="text-muted mt-2"><small><em>Figure 2: Comparison between autoregressive generation (left-to-right token prediction) and diffusion-based generation (iterative denoising of masked tokens).</em></small></p>
+                </div>
+
+                <h2>What confused me at first</h2>
+
+                <p>If diffusion is viable, why did everyone pick autoregression?</p>
+
+                <p>My guess is that autoregression is easier to optimize, easier to sample from, and already has huge infrastructure and tooling. But the paper argues that autoregression is not a requirement for LLM-like behavior. That was the big mental shift for me.</p>
+
+                <h2>What I think I learned</h2>
+
+                <ol>
+                    <li>There are multiple valid objectives for language modeling. Next-token prediction is not the only game.</li>
+                    <li>The training objective can change the kinds of errors the model makes, like the reversal curse.</li>
+                    <li>Scaling still matters. Even with a different objective, bigger models still learn better.</li>
+                </ol>
+
+                <h2>Questions I still have</h2>
+
+                <ul>
+                    <li>Sampling speed. Diffusion usually needs multiple steps.</li>
+                    <li>Long-form coherence. Do denoising steps drift over long outputs?</li>
+                    <li>Is the reversal-curse result general, or just a special case?</li>
+                </ul>
+
+                <h2>Why this matters to me as a student</h2>
+
+                <p>This paper reminded me that the foundations of the field are still flexible. It pushed me to stop treating autoregression as a law of nature and start treating it as one good design choice among others.</p>
+
+                <p>If diffusion language models keep improving, they might open up new ways to control generation, improve reasoning behaviors, or reduce certain failure modes. That is exciting from a fundamentals point of view.</p>
+
+                <hr>
+
+                <p><strong>Paper:</strong> <a href="https://arxiv.org/abs/2502.09992" target="_blank">Large Language Diffusion Models (arXiv:2502.09992)</a></p>
+
+                <a href="../../" class="back-link">← Back to home</a>
+            </div>
+        </article>
+    </div>
+
+    <footer class="mt-5 py-4 bg-light">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2026. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
