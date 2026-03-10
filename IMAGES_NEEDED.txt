@@ -1,0 +1,36 @@
+Images needed for LLaDA blog post:
+
+1. Cover image (card on homepage):
+   - Path: images/post-covers/llada-diffusion.png
+   - Size: Should fit 200px height container
+   - Content: Something related to diffusion models, text generation, or masked language modeling
+   - Suggestion: Abstract visualization of masked tokens being filled in
+
+2. Content image 1:
+   - Path: images/post-content/diffusion-process.png
+   - Caption: "The diffusion process for text uses masking instead of Gaussian noise"
+   - Content: Diagram showing clean text → progressively masked → model learns to unmask
+   - Example flow: "Hello world" → "H[MASK][MASK]o w[MASK]rld" → "Hello world"
+
+3. Content image 2:
+   - Path: images/post-content/autoregressive-vs-diffusion.png
+   - Caption: "Comparison between autoregressive and diffusion-based generation"
+   - Content: Side-by-side comparison
+     Left: Autoregressive (arrow left-to-right, one token at a time)
+     Right: Diffusion (iterative denoising, multiple masked tokens filled simultaneously)
+
+COMMANDS TO RUN AFTER ADDING IMAGES:
+
+1. Delete hello.txt:
+   git -C /home/vbox/blog rm hello.txt
+
+2. Add new files:
+   git -C /home/vbox/blog add posts/llada-diffusion-models/
+   git -C /home/vbox/blog add index.html
+   git -C /home/vbox/blog add images/ (if images added)
+
+3. Commit:
+   git -C /home/vbox/blog commit -m "Add LLaDA diffusion models blog post"
+
+4. Push:
+   git -C /home/vbox/blog push origin main

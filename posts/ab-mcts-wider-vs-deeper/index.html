@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding AB-MCTS for LLMs - My Blog</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Droid+Serif&family=Droid+Sans&display=swap" rel="stylesheet">
+    <link href="../../css/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="../../">Muhammad Muzammil</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <article>
+            <header class="post-header">
+                <h1>Understanding AB‑MCTS for LLMs: When to Go Wider vs Go Deeper</h1>
+                <p class="post-meta">March 3, 2026</p>
+            </header>
+
+            <div class="post-body">
+                <p>I kept seeing the phrase “inference‑time scaling” and it sounded vague. People say “just sample more” or “use search,” but that never felt concrete. Then I found a paper called “Wider or Deeper? Scaling LLM Inference‑Time Compute with Adaptive Branching Tree Search.” It finally made the idea feel real.</p>
+                <p>This post is me trying to understand what it actually does and why it matters.</p>
+
+                <h2>The problem it tries to solve</h2>
+                <p>Sampling multiple answers from an LLM is effective, but it wastes compute in a dumb way.</p>
+                <p>If you generate 20 answers, you do not reuse what you learned from answer 1 when you generate answer 2. Every sample is independent. If you have feedback signals like unit tests or compile errors, you want to use them, not ignore them.</p>
+                <p>So the question becomes: <strong>How do you spend your inference budget more intelligently?</strong></p>
+
+                <div class="text-center my-4">
+                    <img src="../../images/post-content/ab-mcts-diagram.svg" alt="Wider vs. Deeper Tree Search" class="img-fluid" style="max-width: 100%; height: auto; background: #fff; border-radius: 8px; padding: 10px;">
+                    <p class="text-muted mt-2"><small><em>Figure 1: AB-MCTS intelligently decides whether to branch "wider" for diverse ideas or go "deeper" to refine a promising one.</em></small></p>
+                </div>
+
+                <h2>The core idea</h2>
+                <p>You can use a tree search to decide where to spend compute:</p>
+                <ul>
+                    <li>Go <strong>wider</strong> when you need diversity. This means branching into new candidate answers.</li>
+                    <li>Go <strong>deeper</strong> when a candidate looks promising. This means refining, revising, and improving a candidate answer.</li>
+                </ul>
+                <p>AB‑MCTS is a system that adapts between those two options based on feedback.</p>
+
+                <h2>A quick mental model</h2>
+                <p>Think of each node in the tree as a partial solution. At each step you can:</p>
+                <ol>
+                    <li>Expand to a new branch (go wider).</li>
+                    <li>Refine the current branch (go deeper).</li>
+                </ol>
+                <p>AB‑MCTS decides which one to do using a score. The score is based on external feedback, not just the model’s own confidence. This is important in coding tasks where you can run tests and know if something is actually working.</p>
+                <p>So instead of “sample 20 answers,” you do something more like this:</p>
+                <ul>
+                    <li>Sample a few initial ideas.</li>
+                    <li>Test them with an evaluator (e.g., run unit tests).</li>
+                    <li>Expand on the promising ones that pass the tests.</li>
+                    <li>Keep doing that until your compute budget is used up.</li>
+                </ul>
+
+                <h2>Why it feels important</h2>
+                <p>This idea will show up everywhere for students. It is a clean way to turn “give the model more time” into a real algorithm.</p>
+                <p>Also, it is simple enough to plug into workflows where you already have evaluators, like:</p>
+                <ul>
+                    <li>Unit tests</li>
+                    <li>Compile checks</li>
+                    <li>Symbolic verifiers</li>
+                    <li>Constraint solvers</li>
+                </ul>
+                <p>If you can score it, you can search it.</p>
+
+                <h2>What the paper claims</h2>
+                <p>From the abstract:</p>
+                <ul>
+                    <li>AB‑MCTS outperforms repeated sampling.</li>
+                    <li>It also beats standard Monte Carlo Tree Search (MCTS).</li>
+                    <li>The gains are clearest on coding and engineering tasks.</li>
+                </ul>
+                <p>That makes sense because those tasks provide clean, reliable feedback signals.</p>
+
+                <h2>What confused me at first</h2>
+                <p>I thought sampling more was basically the same thing as search. It is not.</p>
+                <p>Sampling gives you diversity, but it does not give you a strategy for using feedback. Tree search does. That is the mental shift.</p>
+
+                <h2>What I took away</h2>
+                <ol>
+                    <li>Inference‑time scaling is real, but naive sampling is wasteful.</li>
+                    <li>If feedback exists, you should structure the search to use it.</li>
+                    <li>AB‑MCTS is a practical recipe for that structure.</li>
+                </ol>
+                <p>I expect this to become a standard baseline in the future.</p>
+                
+                <hr>
+
+                <p><strong>The Paper:</strong> <a href="https://arxiv.org/abs/2503.04412" target="_blank">Wider or Deeper? Scaling LLM Inference‑Time Compute with Adaptive Branching Tree Search (arXiv:2503.04412)</a></p>
+                <p><em>If I got anything wrong, please correct me. I am still learning and want to understand this properly.</em></p>
+
+                <a href="../../" class="back-link">← Back to home</a>
+            </div>
+        </article>
+    </div>
+
+    <footer class="mt-5 py-4 bg-light">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2026. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
